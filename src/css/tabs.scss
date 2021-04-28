@@ -1,0 +1,60 @@
+/* Style the tab content */
+
+.thandulsTogglableEffects-tabcontent {
+	float: left;
+	padding: 0px 12px;
+	border: 1px solid #ccc;
+	width: 70%;
+	border-left: none;
+	height: 300px;
+}
+// .thandulsTogglableEffects-container--tabs {
+// 	margin: 2rem;
+// }
+.thandulsTogglableEffects-container--tabs .nav-tabs {
+	float: left;
+	width: 100%;
+	margin: 0;
+	list-style-type: none;
+	border-bottom: 1px solid #ddd;
+}
+.thandulsTogglableEffects-container--tabs .nav-tabs > li {
+	float: left;
+	margin-bottom: -1px;
+	width: 100px;
+}
+.thandulsTogglableEffects-container--tabs .nav-tabs > li > p {
+	float: left;
+	margin-right: 2px;
+	line-height: 1.42857143;
+	padding: 10px;
+	border: 1px solid transparent;
+	border-radius: 4px 4px 0 0;
+}
+.thandulsTogglableEffects-container--tabs .nav-tabs > li > p:hover {
+	border-color: #eee #eee #ddd;
+}
+.thandulsTogglableEffects-container--tabs .nav-tabs > li.active > p,
+.thandulsTogglableEffects-container--tabs .nav-tabs > li.active > p:hover,
+.thandulsTogglableEffects-container--tabs .nav-tabs > li.active > p:focus {
+	color: #555;
+	cursor: default;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-bottom-color: transparent;
+}
+.thandulsTogglableEffects-container--tabs .thandulsTogglableEffects-tab-content {
+	float: left;
+	width: 100%;
+}
+.thandulsTogglableEffects-container--tabs .thandulsTogglableEffects-tab-content > .thandulsTogglableEffects-tab-pane {
+	display: none;
+}
+.thandulsTogglableEffects-container--tabs .thandulsTogglableEffects-tab-content > .thandulsTogglableEffects-tab-pane.active {
+	display: block;
+	padding: 2.5% 3.5%;
+}
+.thandulsTogglableEffects-container--tabs .thandulsTogglableEffects-tab-content > .active {
+	display: block;
+}
+

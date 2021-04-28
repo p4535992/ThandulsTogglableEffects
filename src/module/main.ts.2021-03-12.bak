@@ -1,0 +1,203 @@
+import { isDAEEnabled, isBarbarianClassItem, getDurationData, arrayChunk } from './helpers.js';
+import { ThandulBuffsAndEffects } from './effects.js';
+import { ThandulConditions } from './conditions.js';
+
+let currentActive = "Spells";
+
+export const createTogglablesTable = async function() {
+
+    // Create array of HTML elements for effects enabled in settings.
+    let togglablesSpellsHTML;
+    await ThandulBuffsAndEffects.getEnabledSpells()
+    .then(enabledEffects =>{
+      let html = arrayChunk(enabledEffects, 5).map(effects =>
+        createEffectsRowHTML(effects)
+      ).join('');
+      togglablesSpellsHTML =html;
+    })
+    .catch(error => 
+      console.error(error.message)
+    );
+
+    let togglablesFeaturesHTML;
+    await ThandulBuffsAndEffects.getEnabledFeatures()
+    .then(enabledEffects =>{
+      let html = arrayChunk(enabledEffects, 5).map(effects =>
+        createEffectsRowHTML(effects)
+      ).join('');
+      togglablesFeaturesHTML =html;
+    })
+    .catch(error => 
+      console.error(error.message)
+    );
+
+    let togglablesConditionsHTML = 
+      arrayChunk(ThandulConditions.getEnabledEffects(), 5).map(conditions => 
+        createEffectsRowHTML(conditions)).join('');
+
+    let togglablesLightsHTML = createEffectsRowHTML([]);
+
+    // let togglablesLightsHTML;
+    // await ThandulBuffsAndEffects.getEnabledLights()
+    // .then(enabledEffects =>{
+    //   let html = arrayChunk(enabledEffects, 5).map(effects => createEffectsRowHTML(effects)).join('');
+    //   togglablesEffectsHTML =html;
+    // })
+    // .catch(error => 
+    //   console.error(error.message)
+    // ); 
+    
+    let nameSpells = "Spells";
+    let nameFeatures = "Features";
+    let nameConditions = "Conditions";
+    let nameLights = "Lights";
+
+    // Inspired from https://codepen.io/E-nathan/pen/MXLRdB for manage multitab with vanilla js
+
+    // TODO PREPARE A HTML TEMPLATE FOR BETTER MANTAIN THIS BECAUSE I HATE THIS PIECE OF CODE
+
+    let divsHTMLSpells =
+      `<div id="tabdiv-` + nameSpells + `" class="thandulsTogglableEffects-tab-pane ` + (currentActive==nameSpells ? "active" : "") + `">
+        <span class="glyphicon glyphicon-leaf glyphicon--home--feature two columns text-center"></span>
+        <span class="col-md-10">
+          ` + togglablesSpellsHTML +  `
+        </span>
+      </div>`;
+
+    let divsHTMLFeatures =
+      `<div id="tabdiv-` + nameFeatures + `" class="thandulsTogglableEffects-tab-pane ` + (currentActive==nameFeatures ? "active" : "") + `">
+        <span class="glyphicon glyphicon-leaf glyphicon--home--feature two columns text-center"></span>
+        <span class="col-md-10">
+          ` + togglablesFeaturesHTML +  `
+        </span>
+      </div>`;
+
+    let divsHTMLConditions = 
+       `<div id="tabdiv-` +  nameConditions + `" class="thandulsTogglableEffects-tab-pane` + (currentActive==nameConditions ? "active" : "") + `">
+         <span class="glyphicon glyphicon-leaf glyphicon--home--feature two columns text-center"></span>
+         <span class="col-md-10">
+           ` + togglablesConditionsHTML +  `
+        </span>
+      </div>`;
+
+    let divsHTMLLights =
+      `<div id="tabdiv-` +  nameLights + `" class="thandulsTogglableLights-tab-pane` + (currentActive==nameLights ? "active" : "") + `">
+        <span class="glyphicon glyphicon-leaf glyphicon--home--feature two columns text-center"></span>
+        <span class="col-md-10">
+          ` + togglablesLightsHTML +  `
+        </span>
+      </div>`;
+
+    let tabsHTML =
+    `<div class="thandulsTogglableEffects-container--tabs">
+      <section class="row" id="thandulsTogglableEffects-tab-row">
+        <ul class="nav nav-tabs">
+          <li id="thandulsTogglableEffects-tab-` + nameSpells + `" class="thandulsTogglableEffects-tablinks ` + (currentActive==nameSpells ? "active" : "") + `"><p id="thandulsTogglableEffects-tablink-` + nameSpells + `" >` + nameSpells + `</p></li>
+          <li id="thandulsTogglableEffects-tab-` + nameFeatures + `" class="thandulsTogglableEffects-tablinks ` + (currentActive==nameFeatures ? "active" : "") + `"><p id="thandulsTogglableEffects-tablink-` + nameFeatures + `" >` + nameFeatures + `</p></li>
+          <li id="thandulsTogglableEffects-tab-` + nameConditions + `" class="thandulsTogglableEffects-tablinks ` + (currentActive==nameConditions ? "active" : "") + `"><p id="thandulsTogglableEffects-tablink-` + nameConditions + `" >` + nameConditions + `</p></li>
+          <li id="thandulsTogglableEffects-tab-` + nameLights + `" class="thandulsTogglableEffects-tablinks ` + (currentActive==nameLights ? "active" : "") + `"><p id="thandulsTogglableEffects-tablink-` + nameLights + `" >` + nameLights + `</p></li>
+        </ul>
+        <div class="thandulsTogglableEffects-tab-content">
+          ` + divsHTMLSpells +  `
+          ` + divsHTMLFeatures +  `
+          ` + divsHTMLConditions +  `      
+          ` + divsHTMLLights +  `
+        </div>
+      </section>
+    </div>`;
+
+    let togglablesHTML = "<div class=\"thandulTogglables\">"+ tabsHTML +"</div>";
+
+    // Extract token controls button for this module.
+    let thandulControl = document.querySelector('li[data-tool="thandulTogglables"]');
+    if(!thandulControl) { return; }
+
+    // Try extracting existing div element with effect togglables and remove it.
+    let togglablesDiv = thandulControl.getElementsByClassName('thandulTogglables')[0];
+    if (togglablesDiv) { thandulControl.removeChild(togglablesDiv); }
+
+    // Insert new HTML for togglables div.
+    thandulControl.insertAdjacentHTML('beforeend', togglablesHTML);
+    // thandulControl.querySelectorAll('div.thandulTogglables li').forEach(element => {
+    //     element.addEventListener("click", ThandulBuffsAndEffects.handleEffectToggleEvent);
+    // });
+
+    thandulControl.querySelectorAll('li.thandulsTogglableEffects-effect').forEach(element => {
+      if(element.parentElement.parentElement.parentElement.id==("tabdiv-" +  nameSpells)){
+        element.addEventListener("click", ThandulBuffsAndEffects.handleEffectToggleEvent);
+      }else if(element.parentElement.parentElement.parentElement.id==("tabdiv-" +  nameConditions)){
+        element.addEventListener("click", ThandulConditions.handleEffectToggleEvent);
+      }else if(element.parentElement.parentElement.parentElement.id==("tabdiv-" +  nameLights)){
+        //element.addEventListener("click", ThandulLights.handleEffectToggleEvent);
+      }
+    });
+
+    document.querySelectorAll('li.thandulsTogglableEffects-tablinks').forEach(element2 => {
+      element2.addEventListener("click", (event) => {
+        openTab(event,element2);
+      });
+    });
+}
+
+function createEffectsRowHTML(effects) {
+    return `<ul>` + effects.map(effect => `
+        <li class="thandulsTogglableEffects-effect" data-effect-name="` + effect.name + `">
+            <div data-effect-name="` + effect.name + `">
+                <img src="` + effect.icon + `" data-effect-name="` + effect.name + `"/>
+                <p data-effect-name="` + effect.name + `">` + effect.name + `</p>
+            </div>
+        </li>`
+    ) + `</ul>`;
+}
+
+function createConditionsRowHTML(conditions) {
+  return `<ul><li class="thandulsTogglableEffects-effect"><div></div></li></ul>`;
+}
+
+function createLightsRowHTML(conditions) {
+  return `<ul><li class="thandulsTogglableEffects-effect"><div></div></li></ul>`;
+}
+
+/**
+ * TODO I HATE THIS CODE ASK TO SOMEONE MORE SKILLED FOR UPGRADE
+ * @param tabClickEvent
+ */
+function openTab(tabClickEvent, element) {// thandulsTogglableEffects-tab-Effects
+  //if(tabClickEvent && tabClickEvent.currentTarget.parentNode){
+  if(tabClickEvent && tabClickEvent.currentTarget){
+      var tabName = element.id;
+      var clickedTab = tabClickEvent.currentTarget;
+      var clickedTabLinkId = tabClickEvent.target.id;//thandulsTogglableEffects-tablink-Conditions
+  
+      var tabParent = document.getElementById("thandulsTogglableEffects-tab-row");//tabClickEvent.currentTarget.parentNode.parentNode.parentNode;
+      var theTabs = tabParent.querySelectorAll("ul.nav-tabs > li.thandulsTogglableEffects-tablinks");
+      for (var i = 0; i < theTabs.length; i++) {
+          theTabs[i].classList.remove("active");
+      }
+      //clickedTab.classList.add("active");
+      tabClickEvent.preventDefault();
+      var contentPanes = tabParent.querySelectorAll(".thandulsTogglableEffects-tab-pane");
+      for (i = 0; i < contentPanes.length; i++) {
+          contentPanes[i].classList.remove("active");
+      }
+
+      // var anchorReference = tabClickEvent.target;
+      // var activePaneId = anchorReference.getAttribute("href");
+      // var activePane = tabParent.querySelector(activePaneId);
+  
+      var s = tabName.split("thandulsTogglableEffects-tab-").join("");
+      var t = clickedTabLinkId.split("thandulsTogglableEffects-tablink-").join("") ;
+      var activePane = document.getElementById(tabName);
+      if(s == t){ 
+          activePane.classList.add("active");
+          document.getElementById("tabdiv-"+s).style.display = "block";
+          currentActive = t;
+      }else{
+          activePane.classList.remove("active");
+          document.getElementById("tabdiv-"+s).style.display = "none";
+      }
+      
+  
+  }
+}    
+

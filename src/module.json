@@ -1,0 +1,130 @@
+{
+  "name": "ThandulsTogglableEffects",
+  "title": "Thandul's Togglable Effects",
+  "description": "Module providing custom scene control that allows toggling buffs and effects for most of common spells on actors associated with selected tokens.",
+  "version": "1.2.6",
+  "author": "Thandulfan#0087",
+  "type": "module",
+  "socket": true,
+  "includes": [
+    "./assets/**",
+    "./lang/**",
+    "./scripts/**",
+    "./styles/**",
+    "./templates/**",
+    "./module.json",
+    "./README.md",
+    "./icons/**",
+    "./packs/**"
+  ],
+  "media": [
+    {
+      "type": "icon",
+      "location": ""
+    }, 
+    {
+      "type": "cover",
+      "location": ""
+    },
+    {
+      "type": "screenshot",
+      "location": ""
+    }
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "systems": [
+    "dnd5e"
+  ],
+  "scripts": [
+  ],
+  "esmodules": [
+    "ThandulsTogglableEffects.js"
+  ],
+  "styles": [
+    "./css/style.css",
+    "./css/tabs.css"
+  ],
+  "packs": [
+    {
+      "name": "ThandulsTogglableEffects Pack",
+      "label": "ThandulsTogglableEffects Pack",
+      "path": "packs/thandulstogglableeffects-pack.db",
+      "entity": "Item",
+      "module": "ThandulsTogglableEffects",
+      "system": "dnd5e",
+      "lang": ["en"]
+    },
+    {
+      "name" : "ThandulsTogglableEffects Lingering Injuries Items",
+      "label" : "ThandulsTogglableEffects Lingering Injuries Items",
+      "path" : "packs/acoItem.db",
+      "entity" : "Item",
+      "module" : "ThandulsTogglableEffects",
+      "system": "dnd5e"
+    },
+    {
+      "name" : "ThandulsTogglableEffects Lingering Injuries Tables",
+      "label" : "ThandulsTogglableEffects Lingering Injuries Tables",
+      "path" : "packs/acoTable.db",
+      "entity" : "RollTable",
+      "module" : "ThandulsTogglableEffects",
+      "system": "dnd5e"
+    },
+    {
+      "name" : "ThandulsTogglableEffects Pack Conditions",
+      "label" : "ThandulsTogglableEffects Pack Conditions",
+      "path" : "packs/thandulstogglableeffects-conditions.db",
+      "entity" : "Item",
+      "module" : "ThandulsTogglableEffects",
+      "system": "dnd5e"
+    },
+    {
+      "name" : "ThandulsTogglableEffects Pack Visions and Lights",
+      "label" : "ThandulsTogglableEffects Pack Visions and Lights",
+      "path" : "packs/thandulstogglableeffects-visions-and-lights.db",
+      "entity" : "Item",
+      "module" : "ThandulsTogglableEffects",
+      "system": "dnd5e"
+    }, 
+    {
+      "name" : "ThandulsTogglableEffects Pack Macro",
+      "label" : "ThandulsTogglableEffects Pack Macro",
+      "path" : "packs/thandulstogglableeffects-macro.db",
+      "entity" : "Macro",
+      "module" : "ThandulsTogglableEffects",
+      "system": "dnd5e"
+    }
+  ],
+  "url": "https://github.com/p4535992/ThandulsTogglableEffects/",
+  "manifest": "https://raw.githubusercontent.com/p4535992/ThandulsTogglableEffects/master/ThandulsTogglableEffects/module.json",
+  "download": "https://github.com/p4535992/ThandulsTogglableEffects/raw/master/ThandulsTogglableEffects.zip",
+  "minimumCoreVersion": "0.7.6",
+  "compatibleCoreVersion": "0.7.9",
+  "minimumSystemVersion": "1.2.2",
+  "changelog": "https://raw.githubusercontent.com/p4535992/ThandulsTogglableEffects/main/changelog.md",
+  "bugs": "https://github.com/p4535992/ThandulsTogglableEffects/issues",
+  "allowBugReporter": true,
+  "dependencies": [
+    {
+      "name": "Dynamic-Effects-SRD"
+    },
+    {
+      "name": "ATL"
+    },
+    {
+      "name": "perfect-vision"
+    },
+    {
+      "name": "midi-qol"
+    },
+    {
+      "name": "tokenmagic"
+    }
+  ]
+}
