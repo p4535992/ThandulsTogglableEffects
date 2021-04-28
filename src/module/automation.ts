@@ -41,7 +41,8 @@ export const handleChatMessage = function(message) {
         return;
     }
 
-    let togglableEffect = ThandulBuffsAndEffects.effects.find(effect => effect.name == item.name);
+    let togglableEffect = ThandulBuffsAndEffects.getEnabledEffects().find(effect => effect.name == item.name);
+    //let togglableEffect = ThandulBuffsAndEffects.effects.find(effect => effect.name == item.name);
     console.warn("togglableEffect:" + togglableEffect);
     if (!togglableEffect) { return; }
     let effect:any = {};

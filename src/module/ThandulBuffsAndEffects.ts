@@ -13,7 +13,7 @@ export class ThandulBuffsAndEffects {
             {key: "data.bonuses.rwak.attack", mode: 2, value: "-1d4"},
         ]),
         new TogglableEffect("Barkskin", "Barkskin", "modules/ThandulsTogglableEffects/media/effects/barkskin.jpg", 60, undefined, {}, [
-            {key: "data.attributes.ac.value", mode: 4, value: 16, priority: 60}
+            {key: "data.attributes.ac.value", mode: 4, value: 16, priority: 5}
         ]),
         new TogglableEffect("Bless", "Bless", "modules/ThandulsTogglableEffects/media/effects/bless.jpg", 1, undefined, {}, [
             {key: "data.bonuses.abilities.save", mode: 2, value: "+1d4"},
@@ -27,10 +27,10 @@ export class ThandulBuffsAndEffects {
             {key: "data.bonuses.rwak.damage", mode: 2, value: "+1d4"},
         ]),
         new TogglableEffect("Fly", "Fly", "modules/ThandulsTogglableEffects/media/effects/fly.jpg", 10, undefined, {}, [
-            {key: "data.attributes.movement.fly", mode: 4, value: 60},
+            {key: "data.attributes.movement.fly", mode: 4, value: 60, priority: 5},
         ]),
         new TogglableEffect("Fortune's Favor", "Fortune's Favor", "modules/ThandulsTogglableEffects/media/effects/fortunes-favor.jpg", 60, undefined, {}, [
-            {key: "data.attributes.inspiration", mode: 4, value: "1"},
+            {key: "data.attributes.inspiration", mode: 4, value: "1", priority: 5},
         ]),
         new TogglableEffect("Gift of Alacrity", "Gift of Alacrity", "modules/ThandulsTogglableEffects/media/effects/gift-of-alacrity.jpg", 480, undefined, {}, [
             {key: "data.attributes.init.value", mode: 2, value: "+1d8"},
@@ -45,11 +45,11 @@ export class ThandulBuffsAndEffects {
         ]),
         new TogglableEffect("Haste", "Haste", "modules/ThandulsTogglableEffects/media/effects/haste.jpg", 1, undefined, {}, [
             {key: "data.attributes.ac.value", mode: 2, value: "+2", priority: 80},
-            {key: "data.attributes.movement.burrow", mode: 1, value: 2},
-            {key: "data.attributes.movement.climb", mode: 1, value: 2},
-            {key: "data.attributes.movement.fly", mode: 1, value: 2},
-            {key: "data.attributes.movement.swim", mode: 1, value: 2},
-            {key: "data.attributes.movement.walk", mode: 1, value: 2},
+            {key: "data.attributes.movement.burrow", mode: 1, value: 2, priority: 10},
+            {key: "data.attributes.movement.climb", mode: 1, value: 2, priority: 10},
+            {key: "data.attributes.movement.fly", mode: 1, value: 2, priority: 10},
+            {key: "data.attributes.movement.swim", mode: 1, value: 2, priority: 10},
+            {key: "data.attributes.movement.walk", mode: 1, value: 2, priority: 10},
         ]),
         new TogglableEffect("Hunter's Mark 1h", "Hunter's Mark 1h", "modules/ThandulsTogglableEffects/media/effects/hunters-mark.jpg", 60, undefined, {}, [
             {key: "data.bonuses.mwak.damage", mode: 2, value: "+1d6"},
@@ -71,7 +71,7 @@ export class ThandulBuffsAndEffects {
             {key: "data.attributes.movement.walk", mode: 2, value: "+10"},
         ]),
         new TogglableEffect("Mage Armor", "Mage Armor", "modules/ThandulsTogglableEffects/media/effects/mage-armor.jpg", 480, undefined, {}, [
-            {key: "data.attributes.ac.value", mode: 4, value: "{value}"},
+            {key: "data.attributes.ac.value", mode: 4, value: "{value}", priority: 5},
         ]),
         new TogglableEffect("Pass without Trace", "Pass without Trace", "modules/ThandulsTogglableEffects/media/effects/pass-without-trace.jpg", 60, undefined, {}, [
             {key: "data.skills.ste.mod", mode: 2, value: "+10"},
@@ -109,6 +109,10 @@ export class ThandulBuffsAndEffects {
             {key: "data.bonuses.mwak.attack", mode: 2, value: "-5"},
             {key: "data.bonuses.mwak.damage", mode: 2, value: "+10"},
         ]),
+        new TogglableEffect("Darkvision", "Darkvision", "modules/ThandulsTogglableEffects/media/effects/darkvision.jpg", 480, undefined, {}, [
+            {key: "data.attributes.senses.darkvision", mode: 4, value: "60", priority: 5},
+        ]),
+        new TogglableEffect("Hybrid Transformation", "Hybrid Transformation", "modules/ThandulsTogglableEffects/media/effects/hybrid-transformation.jpg", undefined, undefined, {}, []),
     ];
 
     static getEnabledEffects() {
@@ -137,6 +141,8 @@ export class ThandulBuffsAndEffects {
         switch (togglableEffect.name) {
             case "Rage": effect = this.rage(actor); break;
             case "Shield": effect = this.shield(actor); break;
+            case "Mage Armor": customEffectValue = isDAEEnabled() ? '13 + @data.abilities.dex.mod' : (13 + actor.data.data.abilities.dex.mod).toString();
+            case "Hybrid Transformation": effect = this.hybridTransformation(actor); break;
             case "Mage Armor": customEffectValue = isDAEEnabled() ? '13 + @data.abilities.dex.mod' : (13 + actor.data.data.abilities.dex.mod).toString();
             default: effect = togglableEffect.effectDict(customEffectValue); break;
         }
@@ -199,7 +205,35 @@ export class ThandulBuffsAndEffects {
                 }
             },
             changes: [
-                {key: "data.attributes.ac.value", mode: 2, value: "5"},
+                {key: "data.attributes.ac.value", mode: 2, value: "+5"},
+              ],
+        };
+    }
+
+    static hybridTransformation(actor=undefined) {
+        let currentCombat = game.combats.combats.find(combat => combat.combatants.map(combatant => combatant.actor.id).includes(actor != undefined ? actor.id : ''));
+        let combatantCount = currentCombat != undefined ? currentCombat.combatants.length : 0;
+        let damageBonus = "";
+        if (actor.data.data.details.level < 11) {
+            damageBonus = "+1";
+        } else if (actor.data.data.details.level < 18) {
+            damageBonus = "+2";
+        } else {
+            damageBonus = "+3";
+        }
+        let acBonus = "+1";
+        if (actor.data.items.filter(item => item.data.armor != undefined).find(armor => armor.data.armor.type == "heavy" && armor.data.equipped) != undefined) {
+            acBonus = "+0";
+        }
+        return {
+            name: "Hybrid Transformation",
+            label: "Toggled Effect: Hybrid Transformation",
+            icon: "modules/ThandulsTogglableEffects/media/hybrid-transformation.jpg",
+            duration: getDurationData(60),
+            changes: [
+                {key: "data.bonuses.mwak.damage", mode: 2, value: damageBonus},
+                {key: "data.traits.dr.custom", mode: 2, value: "Resistance to bludgeoning, piercing, and slashing damage from nonmagical attacks not made with silver weapons."},
+                {key: "data.attributes.ac.value", mode: 2, value: acBonus},
               ],
         };
     }

@@ -43,7 +43,7 @@ export class ThandulVisions {
             // VISIONS
             // =======================
 
-            // case "Blinded": effect = this.blinded(); break;
+            //case "Darkvision": effect = this.darkvision(); break;
 
             default: return undefined;
         }
