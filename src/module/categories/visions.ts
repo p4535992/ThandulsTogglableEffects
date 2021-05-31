@@ -21,11 +21,14 @@ export class ThandulVisions {
             if(toggledEffect.effects){
                 toggledEffect = toggledEffect.effects.find(effect => effect.label == toggledEffect.label);
             }
-            let effectToRemove = actor.data.effects.find(effect => effect.label == toggledEffect.label);
+            //@ts-ignore
+            let effectToRemove = Array.from(actor.data.effects.values()).find(effect => effect.data.label == toggledEffect.label);
             if(effectToRemove){ 
-                actor.deleteEmbeddedEntity("ActiveEffect", effectToRemove._id);
+                //@ts-ignore
+                actor.deleteEmbeddedDocuments("ActiveEffect", [effectToRemove.id])
             }else{
-                actor.createEmbeddedEntity("ActiveEffect", toggledEffect);
+                //@ts-ignore
+                actor.createEmbeddedDocuments("ActiveEffect", [toggledEffect]);
             }          
         }
         if(updates.length>0){

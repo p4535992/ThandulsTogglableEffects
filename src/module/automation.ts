@@ -59,14 +59,8 @@ export const handleChatMessage = function(message) {
     }
     effect.origin = "Actor." + actor.id;
 
-    let effectToRemove = actor.data.effects.find(e => e['label'] == effect.label);
-    if (effectToRemove) {
-        actor.deleteEmbeddedEntity("ActiveEffect", effectToRemove._id);
-    }
-    actor.createEmbeddedEntity("ActiveEffect", effect);
-    // if (effectToRemove) {
-    //     actor.deleteOwnedItem(effectToRemove['_id']);
-    // }
-    // actor.createOwnedItem(effect);
+    let effectToRemove = <ActiveEffect>Array.from(actor.data.effects.values()).find((e:ActiveEffect) => e.data.label == effect.label);
+    if (effectToRemove) { actor.deleteEmbeddedDocuments("ActiveEffect", [effectToRemove.id]); }
+    actor.createEmbeddedDocuments("ActiveEffect", [effect]);
     return effect;
 }

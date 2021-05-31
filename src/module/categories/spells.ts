@@ -41,9 +41,11 @@ export class ThandulSpells {
             if(toggledEffect.effects){
                 toggledEffect = toggledEffect.effects.find(effect => effect.label == toggledEffect.label);
             }
-            let effectToRemove = actor.data.effects.find(effect => effect.label == toggledEffect.label);
+            //@ts-ignore
+            let effectToRemove = Array.from(actor.data.effects.values()).find(effect => effect.data.label == toggledEffect.label);
             if(effectToRemove){
-                actor.deleteEmbeddedEntity("ActiveEffect", effectToRemove._id);
+                //@ts-ignore
+                actor.deleteEmbeddedDocuments("ActiveEffect", [effectToRemove.id])
                 // ========================
                 // SPECIAL CASE TO INTEGRATE TO A ACTIVE EFFECTS
                 // =======================
@@ -68,7 +70,8 @@ export class ThandulSpells {
                     });
                 }
             }else{
-                actor.createEmbeddedEntity("ActiveEffect", toggledEffect);
+                //@ts-ignore
+                actor.createEmbeddedDocuments("ActiveEffect", [toggledEffect]);
                 // ========================
                 // SPECIAL CASE TO INTEGRATE TO A ACTIVE EFFECTS
                 // =======================
